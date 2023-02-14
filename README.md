@@ -15,6 +15,34 @@ __R=__ No geral, o uso de técnicas de CI ajuda a manter um fluxo de trabalho su
 5. Colaboração: CI promove a colaboração entre os membros da equipe, incentivando-os a trabalhar juntos para garantir que o código funcione corretamente e atenda às necessidades do usuário final.
 
 ### __2) Desenvolva um workflow contendo apenas um job que deve executar uma rotina de teste 1) em cada pull request feito na branch master, 2) em cada push nas branches cujos nomes começam com a string release, e 3) manualmente, conforme necessidade dos desenvolvedores. Considere que, para executar o step de testes, basta rodar o comando npm teste dentro do job.__
+__R=__ 
+~~~yaml
+name: Test Workflow
+
+on: [push]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+
+~~~
+
+O Workflow contém um job chamado "Run Tests", que é executado em três ambientes diferentes: ubuntu-18.04, ubuntu-20.04 e ubuntu-22.04. Esses ambientes são definidos por meio da matriz strategy no YAML do Workflow.
+
+O job tem três etapas (steps): a primeira etapa é usada para verificar o código (comando checkout) e a segunda etapa instala as dependências do projeto (npm install). A terceira etapa é responsável por executar os testes com o comando npm test.
+
+Com este exemplo de Workflow, é possível executar testes em três ambientes distintos, garantindo assim a compatibilidade do código com diferentes versões do sistema operacional Ubuntu.
 
 ### __4) Descreva as diferenças entre Actions e Workflows.__
 __R=__ Actions são tarefas executáveis que podem ser acionadas por eventos, enquanto Workflows são uma sequência de Actions organizadas para automatizar um fluxo de trabalho completo. As Actions podem ser executadas independentemente ou em um Workflow, enquanto os Workflows usam Actions para realizar tarefas específicas dentro de um processo automatizado.
